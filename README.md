@@ -66,6 +66,33 @@ used by a broad range of stakeholders including parents, head teachers,
 advocacy groups and consultancies. Yet making the results of transport
 models open is key to their impact Lovelace, Parkin, and Cohen (2020).
 
+The good news is that more datasets are available than ever before that
+can be used to inform sustainable transport policies, plans and
+decision-making. OpenStreetMap data, which is contributed by the
+community and free for non-commercial use worldwide, contains
+information on most significant schools, roads, walkways and cycleways
+in many cities. There are many other datasets that can be used to
+support evidence-based transport planning in general and prioritisation
+of safe routes to school in particular, including:
+
+- Count datasets, for example cycle counters on roads that feed local
+  schools
+
+- Crash datasets, for example recording slight, serious and fatal
+  injuries at high spatial and temporal resolution
+
+- Socio-demographic data
+
+However, the focus of this paper is on OSM data because it is so widely
+available. It is hoped that work building on this foundation will
+demonstrate how to incorporate other datasets into the analysis, for
+example as the basis of research into inequalities in road safety
+outcomes Vidal Tortosa et al. (2021).
+
+The code below demonstrates the potential for reproducible research
+based on open source software to estimate travel to school patterns and
+walking, wheeling and cycling potential.
+
 # References
 
 <div id="refs" class="references csl-bib-body hanging-indent">
@@ -87,6 +114,16 @@ Lovelace, Robin, John Parkin, and Tom Cohen. 2020. “Open Access
 Transport Models: A Leverage Point in Sustainable Transport Planning.”
 *Transport Policy* 97 (October): 47–54.
 <https://doi.org/10.1016/j.tranpol.2020.06.015>.
+
+</div>
+
+<div id="ref-vidaltortosa_socioeconomic_2021" class="csl-entry">
+
+Vidal Tortosa, Eugeni, Robin Lovelace, Eva Heinen, and Richard P. Mann.
+2021. “Socioeconomic Inequalities in Cycling Safety: An Analysis of
+Cycling Injury Risk by Residential Deprivation Level in England.”
+*Journal of Transport & Health* 23 (December): 101291.
+<https://doi.org/10.1016/j.jth.2021.101291>.
 
 </div>
 

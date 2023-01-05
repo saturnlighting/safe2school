@@ -50,4 +50,19 @@ In many cases, especially in contexts where local or national governments are un
 This makes any derived outputs subject to the same potentially strict licensing agreements that apply to the OD data, preventing the data from being used by a broad range of stakeholders including parents, head teachers, advocacy groups and consultancies.
 Yet making the results of transport models open is key to their impact @lovelace_open_2020.
 
-# References 
+The good news is that more datasets are available than ever before that can be used to inform sustainable transport policies, plans and decision-making.
+OpenStreetMap data, which is contributed by the community and free for non-commercial use worldwide, contains information on most significant schools, roads, walkways and cycleways in many cities.
+There are many other datasets that can be used to support evidence-based transport planning in general and prioritisation of safe routes to school in particular, including:
+
+-   Count datasets, for example cycle counters on roads that feed local schools
+
+-   Crash datasets, for example recording slight, serious and fatal injuries at high spatial and temporal resolution
+
+-   Socio-demographic data
+
+However, the focus of this paper is on OSM data because it is so widely available.
+It is hoped that work building on this foundation will demonstrate how to incorporate other datasets into the analysis, for example as the basis of research into inequalities in road safety outcomes @vidaltortosa_socioeconomic_2021.
+
+The code below demonstrates the potential for reproducible research based on open source software to estimate travel to school patterns and walking, wheeling and cycling potential.
+
+# References
