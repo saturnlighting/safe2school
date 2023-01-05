@@ -117,6 +117,18 @@ tm_shape(study_area) +
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
+``` r
+schools_osmdata = opq(study_area) %>% 
+  add_osm_feature(key = "amenity", value = "school") %>% 
+  osmdata_sf()
+schools_polygons = schools_osmdata$osm_polygons
+tmap_mode("plot")
+#> tmap mode set to plotting
+m + qtm(schools_polygons)
+```
+
+![](README_files/figure-gfm/schools-1.png)<!-- -->
+
 # References
 
 <div id="refs" class="references csl-bib-body hanging-indent">

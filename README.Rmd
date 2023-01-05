@@ -93,4 +93,13 @@ tmap_save(m, "case-study-area.html")
 webshot2::webshot("case-study-area.html")
 ```
 
+```{r schools}
+schools_osmdata = opq(study_area) %>% 
+  add_osm_feature(key = "amenity", value = "school") %>% 
+  osmdata_sf()
+schools_polygons = schools_osmdata$osm_polygons
+tmap_mode("plot")
+m + qtm(schools_polygons)
+```
+
 # References
