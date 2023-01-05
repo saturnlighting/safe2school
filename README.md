@@ -129,6 +129,69 @@ m + qtm(schools_polygons)
 
 ![](README_files/figure-gfm/schools-1.png)<!-- -->
 
+## Generate OD data
+
+We need ‘origins’ as a basis for OD data. These can be zones,
+residential buildings, or even nodes on the road network.
+
+To demonstrate the approach with minimal data requirements, we can use a
+random sampling strategy to generate points of origin as follows.
+
+``` r
+set.seed(2023)
+origins = sf::st_sample(schools_polygons, size = 100)
+origins = sf::st_sf(data.frame(id = seq(length(origins))), geometry = origins)
+```
+
+Pupils tend to go to schools nearest to their homes. We will generate
+desire lines associated with the points and the schools as follows,
+removing desire lines longer than a threshold distance (10 km in this
+case):
+
+``` r
+school_centroids = sf::st_centroid(schools_polygons) 
+#> Warning in st_centroid.sf(schools_polygons): st_centroid assumes attributes are
+#> constant over geometries of x
+desire_lines = od::points_to_odl(p = origins, pd = school_centroids)
+desire_lines$length = as.numeric(sf::st_length(desire_lines)) / 1000
+hist(desire_lines$length)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+desire_lines_short = desire_lines %>% 
+  filter(length < 5)
+qtm(desire_lines_short)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+``` r
+nrow(desire_lines)
+#> [1] 23600
+nrow(desire_lines_short)
+#> [1] 5884
+```
+
+## Spatial interaction model
+
+..
+
+``` r
+library(simodels)
+```
+
+## Routing
+
+…
+
+## Uptake estimation
+
+…
+
+## Route network generation
+
 # References
 
 <div id="refs" class="references csl-bib-body hanging-indent">
