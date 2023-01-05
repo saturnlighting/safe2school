@@ -8,7 +8,8 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE
 )
 ```
 
@@ -64,5 +65,32 @@ However, the focus of this paper is on OSM data because it is so widely availabl
 It is hoped that work building on this foundation will demonstrate how to incorporate other datasets into the analysis, for example as the basis of research into inequalities in road safety outcomes @vidaltortosa_socioeconomic_2021.
 
 The code below demonstrates the potential for reproducible research based on open source software to estimate travel to school patterns and walking, wheeling and cycling potential.
+
+```{r setup, message=FALSE}
+{
+  library(tidyverse)
+  library(tmap)
+  library(stplanr)
+  library(osmdata)
+}
+tmap_mode("view")
+study_area_name = "Baltimore"
+```
+
+```{r case-study-area}
+study_area = getbb(study_area_name, format_out = "sf_polygon", limit = 1)
+```
+
+```{r, eval=FALSE}
+tm_shape(study_area) +
+  tm_borders()
+```
+
+```{r, echo=FALSE}
+m = tm_shape(study_area) +
+  tm_borders()
+tmap_save(m, "case-study-area.html")
+webshot2::webshot("case-study-area.html")
+```
 
 # References

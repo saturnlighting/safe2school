@@ -93,6 +93,30 @@ The code below demonstrates the potential for reproducible research
 based on open source software to estimate travel to school patterns and
 walking, wheeling and cycling potential.
 
+``` r
+{
+  library(tidyverse)
+  library(tmap)
+  library(stplanr)
+  library(osmdata)
+}
+tmap_mode("view")
+study_area_name = "Baltimore"
+```
+
+``` r
+study_area = getbb(study_area_name, format_out = "sf_polygon", limit = 1)
+```
+
+``` r
+tm_shape(study_area) +
+  tm_borders()
+```
+
+    #> Interactive map saved to /home/robin/github/saturnlighting/safe2school/case-study-area.html
+
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
 # References
 
 <div id="refs" class="references csl-bib-body hanging-indent">
