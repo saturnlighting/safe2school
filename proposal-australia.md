@@ -87,12 +87,12 @@ following data inputs will improve the fidelity of the results:
 | zone_id | n_pupils |
 |:--------|---------:|
 | zone 01 |       12 |
-| zone 01 |       28 |
+| zone 02 |       28 |
 
 - Mode split of travel to school in total (e.g. 50% drive, 2% cycle, 48%
   walk) or for each OD pair if available.
-- Catchment area of the school provided in a geographic file formate
-  such as Shapefile or GeoJSON
+- Catchment area of the school provided in a geographic file format such
+  as Shapefile or GeoJSON
 - Environmental data such as official data on cycle infrastructure and a
   digital elevation model (DEM) in the region
 - Data on barriers to cycling in the area

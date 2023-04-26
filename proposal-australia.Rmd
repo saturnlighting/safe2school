@@ -70,14 +70,14 @@ This OD data could have the following form:
 
 ```{r}
 od_example = data.frame(
-  zone_id = c("zone 01", "zone 01"),
+  zone_id = c("zone 01", "zone 02"),
   n_pupils = c(12, 28)
 )
 knitr::kable(od_example)
 ```
 
 - Mode split of travel to school in total (e.g. 50% drive, 2% cycle, 48% walk) or for each OD pair if available.
-- Catchment area of the school provided in a geographic file formate such as Shapefile or GeoJSON
+- Catchment area of the school provided in a geographic file format such as Shapefile or GeoJSON
 - Environmental data such as official data on cycle infrastructure and a digital elevation model (DEM) in the region
 - Data on barriers to cycling in the area
 
