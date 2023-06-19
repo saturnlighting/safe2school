@@ -1,6 +1,7 @@
 ---
 output: github_document
 bibliography: references.bib
+title: "Estimating current and future potential levels of active travel to school: a reproducible and internatially scalable approach based on open source software (title TBC)"
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -8,18 +9,24 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  cache = TRUE
+  comment = "#>"
+  # cache = TRUE
 )
 ```
-
-# safe2school
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The goal of safe2school is to form a basis for reproducible analysis of open data to estimate current levels of, and estimates of future potential for, active travel to schools, anywhere in the world, down to the street level.
+# Abstract (TBC)
+
+...
+
+# Introduction
+
+...
+
+The goal of the paper is to create a basis for reproducible analysis of open data to estimate current levels of, and estimates of future potential for, active travel to schools, anywhere in the world, down to the street level.
 The motivation is well documented: active travel is an effective solution to environmental, health and social issues.
 Specifically, there is a crisis of sedentary lifestyles affecting young people worldwide.
 Building active travel into everyday life can mitigate this crisis and lead to better mental health and educational outcomes, and tackle inequalities that are exacerbated by the transport system.
@@ -27,7 +34,7 @@ Building active travel into everyday life can mitigate this crisis and lead to b
 By active travel we mean school pupils 'moving on their own steam' by one of the following modes of transport:
 
 -   Walking
--   Wheeling, which can include scooting, rollerblading, or even skatingboarding
+-   Wheeling, which can include scooting, rollerblading, or even skateboarding
 -   Biking, using a pedal cycle
 -   Ebiking, using a pedal cycle with electric assist (aka pedelec)
 
@@ -35,7 +42,8 @@ There is a substantial body of research on active travel among young people and 
 However, the relevance of much of research for local transport planners tasked with prioritising interventions in specific locations is limited because results are rarely provided at the street level at which local infrastructure decisions, such as improving sidewalks or creating new protected cycles, are made.
 
 One approach that does provide local results, and which is used by transport planners in cities across England, is the Propensity to Cycle Tool (PCT).
-First developed in 2015, the approach was extended in 2018 to estimate cycling potential to schools across England @goodman_scenarios_2019. The results are publicly available nationwide via an interactive web application hosted at [www.pct.bike](https://www.pct.bike/), as shown in the image below for London, UK.
+First developed in 2015, the approach was extended in 2018 to estimate cycling potential to schools across England @goodman_scenarios_2019.
+The results are publicly available nationwide via an interactive web application hosted at [www.pct.bike](https://www.pct.bike/), as shown in the image below for London, UK.
 
 ![](images/image-1448227588.png)
 
@@ -64,7 +72,9 @@ There are many other datasets that can be used to support evidence-based transpo
 However, the focus of this paper is on OSM data because it is so widely available.
 It is hoped that work building on this foundation will demonstrate how to incorporate other datasets into the analysis, for example as the basis of research into inequalities in road safety outcomes @vidaltortosa_socioeconomic_2021.
 
-The code below demonstrates the potential for reproducible research based on open source software to estimate travel to school patterns and walking, wheeling and cycling potential.
+# Data and Methods
+
+<!--# The code below demonstrates the potential for reproducible research based on open source software to estimate travel to school patterns and walking, wheeling and cycling potential. -->
 
 ```{r setup, message=FALSE}
 {
@@ -74,7 +84,7 @@ The code below demonstrates the potential for reproducible research based on ope
   library(osmdata)
 }
 tmap_mode("view")
-study_area_name = "Baltimore"
+study_area_name = "Isle of Wight"
 ```
 
 ```{r case-study-area}
@@ -94,7 +104,7 @@ webshot2::webshot("case-study-area.html")
 ```
 
 ```{r schools}
-schools_osmdata = opq(study_area) %>% 
+schools_osmdata = opq(study_area_name) %>% 
   add_osm_feature(key = "amenity", value = "school") %>% 
   osmdata_sf()
 schools_polygons = schools_osmdata$osm_polygons

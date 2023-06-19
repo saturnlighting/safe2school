@@ -1,12 +1,21 @@
+Estimating current and future potential levels of active travel to
+school: a reproducible and internatially scalable approach based on open
+source software (title TBC)
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# safe2school
-
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of safe2school is to form a basis for reproducible analysis of
+# Abstract (TBC)
+
+…
+
+# Introduction
+
+…
+
+The goal of the paper is to create a basis for reproducible analysis of
 open data to estimate current levels of, and estimates of future
 potential for, active travel to schools, anywhere in the world, down to
 the street level. The motivation is well documented: active travel is an
@@ -21,7 +30,7 @@ one of the following modes of transport:
 
 - Walking
 - Wheeling, which can include scooting, rollerblading, or even
-  skatingboarding
+  skateboarding
 - Biking, using a pedal cycle
 - Ebiking, using a pedal cycle with electric assist (aka pedelec)
 
@@ -89,9 +98,9 @@ demonstrate how to incorporate other datasets into the analysis, for
 example as the basis of research into inequalities in road safety
 outcomes Vidal Tortosa et al. (2021).
 
-The code below demonstrates the potential for reproducible research
-based on open source software to estimate travel to school patterns and
-walking, wheeling and cycling potential.
+# Data and Methods
+
+<!--# The code below demonstrates the potential for reproducible research based on open source software to estimate travel to school patterns and walking, wheeling and cycling potential. -->
 
 ``` r
 {
@@ -101,7 +110,7 @@ walking, wheeling and cycling potential.
   library(osmdata)
 }
 tmap_mode("view")
-study_area_name = "Baltimore"
+study_area_name = "Isle of Wight"
 ```
 
 ``` r
@@ -118,7 +127,7 @@ tm_shape(study_area) +
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
-schools_osmdata = opq(study_area) %>% 
+schools_osmdata = opq(study_area_name) %>% 
   add_osm_feature(key = "amenity", value = "school") %>% 
   osmdata_sf()
 schools_polygons = schools_osmdata$osm_polygons
@@ -140,6 +149,7 @@ random sampling strategy to generate points of origin as follows.
 ``` r
 set.seed(2023)
 origins = sf::st_sample(schools_polygons, size = 100)
+#> Linking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.1; sf_use_s2() is TRUE
 origins = sf::st_sf(data.frame(id = seq(length(origins))), geometry = origins)
 ```
 
@@ -150,8 +160,7 @@ case):
 
 ``` r
 school_centroids = sf::st_centroid(schools_polygons) 
-#> Warning in st_centroid.sf(schools_polygons): st_centroid assumes attributes are
-#> constant over geometries of x
+#> Warning: st_centroid assumes attributes are constant over geometries
 desire_lines = od::points_to_odl(p = origins, pd = school_centroids)
 desire_lines$length = as.numeric(sf::st_length(desire_lines)) / 1000
 hist(desire_lines$length)
@@ -169,9 +178,9 @@ qtm(desire_lines_short)
 
 ``` r
 nrow(desire_lines)
-#> [1] 23600
+#> [1] 6300
 nrow(desire_lines_short)
-#> [1] 5884
+#> [1] 1061
 ```
 
 ## Spatial interaction model
