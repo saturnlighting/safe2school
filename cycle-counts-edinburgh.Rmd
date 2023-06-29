@@ -1,0 +1,222 @@
+---
+output: github_document
+---
+
+```{r set-up, message=FALSE, warning=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+
+Cycle count datasets are needed to assess and the model.
+
+```{r}
+u = "https://github.com/nptscot/scottish-cycle-counts/releases/download/1/June.2022-June.2023.zip"
+f = basename(u)
+if(!file.exists(f)) {
+  download.file(u, f)
+  unzip(f, exdir = "data-raw")
+}
+files_csv = list.files("data-raw", pattern = "\\.csv$", full.names = TRUE)
+counts = map_dfr(files_csv, read_csv)
+```
+
+
+```{r}
+counts_monthly = counts |>
+  mutate(
+    year = year(endTime),
+    month = month(endTime, label = TRUE),
+    # date rounded to nearest month in 2020-01-01 format:
+    date = lubridate::floor_date(endTime, unit = "month")
+  ) |>
+  group_by(date, area) |>
+  summarise(
+    count = sum(count)
+  )
+# Add column with names for most common areas:
+# Most common areas are:
+area_counts = counts_monthly |>
+  group_by(area) |>
+  summarise(
+    count = sum(count)
+  )
+
+top_5_areas = area_counts |> 
+  slice_max(count, n = 5)
+
+# Add column that is area name if in top 5, else "Other":
+counts_monthly_top = counts_monthly |>
+  mutate(
+    Area = ifelse(
+      area %in% top_5_areas$area,
+      area,
+      "Other"
+    )
+  ) |>
+  group_by(date, Area) |>
+  summarise(
+    count = sum(count)
+  )
+```
+
+```{r}
+counts_monthly_top |>
+  ggplot(aes(x = date, y = count, colour = Area)) +
+  geom_line() +
+  # Add log y-axis:
+  scale_y_log10()
+```
+
+A quick look at the data to check if there are sites with missing data or duplicated records:
+
+Each site should have a maximum of 378 days in the dataset. The following code detects the sites with some type of duplication and the ones with fewer records.
+
+```{r}
+repeated_sites = counts |>
+  group_by(siteID) |> 
+  filter(n()>378) |> 
+  select(siteID) |>
+  unique()
+
+repeated_sites$siteID  |> length()
+
+fewer_sites = counts |>
+  group_by(siteID) |> 
+  filter(n()<300) |> 
+  select(siteID) |>
+  unique()
+
+fewer_sites$siteID  |> length()
+
+```
+
+A subset of the clean sites is produced, so we can do some AADT analysis. Records after 2023-06-01 are filtered out to have only one year of data for each site
+
+```{r}
+
+clean_counts = counts |>
+  filter(startTime < as.Date("2023-06-01")) |> 
+  anti_join(repeated_sites,by =join_by(siteID)) |>
+  anti_join(fewer_sites,by =join_by(siteID)) |> 
+  filter(n()==365,.by = siteID)
+
+clean_counts |>
+  group_by(siteID,location) |> 
+  unique() |> 
+  count() |> summary()
+
+```
+
+Here we calculate some statistics for the whole year including mean (Averaage Annual Daily Flow), median daily flow, minimum and maximum daily flows,
+
+```{r}
+AADF_sites = clean_counts |> 
+  summarise(across(count,list(mean = mean,
+                              median = median,
+                              min = min,
+                              max = max)),.by = siteID)
+
+AADF_sites
+```
+
+```{r}
+counts_per_area = counts |> select(siteID,area) |> unique()
+
+AADF_sites |>
+  left_join(counts_per_area,by = join_by(siteID)) |> 
+  mutate(
+    area = ifelse(
+      area %in% top_5_areas$area,
+      area,
+      "Other"
+    )) |> 
+  ggplot(aes(x=fct_reorder(area,count_mean,.desc = T),
+             y=count_mean))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col = area),alpha = 0.2,shape = 19,show.legend = F)+
+  coord_cartesian(ylim = c(0,1000))+
+  theme_minimal()+
+  labs(x = "Area",
+       y = "AADF")
+```
+
+We create a vector to store the bank holidays in Scotland extracted from the [mygov.scot web](https://www.mygov.scot/scotland-bank-holidays)
+
+```{r}
+scot_bank_holidays = as.Date(c("2022/06/03",
+                               "2022/06/02",
+                               "2022/08/1",
+                               "2022/11/30",
+                               "2022/12/25",
+                               "2022/12/26",
+                               "2022/12/27",
+                               "2023/01/02",
+                               "2023/01/03",
+                               "2023/04/07",
+                               "2023/05/01",
+                               "2023/05/08",
+                               "2023/05/29"))
+```
+
+We can calculate the same summary statistics by type of day: bank holidays, weekends and weekdays (AAWDF).
+
+```{r}
+ADF_dtype = clean_counts |> 
+  mutate(d.type = case_when(as.Date(startTime) %in% scot_bank_holidays~"Bank Holiday",
+                            wday(startTime,week_start = 1)<6~"Weekday",
+                            TRUE~"Weekend")) |> 
+  summarise(across(count,list(mean = mean,
+                              median = median,
+                              min = min,
+                              max = max)),
+            .by = c(siteID,d.type))
+
+ADF_dtype
+```
+
+```{r}
+counts_per_area = counts |> select(siteID,area) |> unique()
+
+ADF_dtype |>
+  left_join(counts_per_area,by = join_by(siteID)) |> 
+  mutate(
+    area = ifelse(
+      area %in% top_5_areas$area,
+      area,
+      "Other"
+    )) |> 
+  ggplot(aes(x=fct_reorder(area,count_mean,.desc = T),
+             y=count_mean))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col = area),alpha = 0.2,shape = 19,show.legend = F)+
+  coord_cartesian(ylim = c(0,1000))+
+  facet_wrap(d.type~.,ncol = 2)+
+  theme_minimal()+
+  labs(x = "Area",
+       y = "ADF")
+```
+
+# Locations
+
+```{r}
+names(clean_counts)
+ADF_locations = clean_counts |> 
+  mutate(d.type = case_when(as.Date(startTime) %in% scot_bank_holidays~"Bank Holiday",
+                            wday(startTime,week_start = 1)<6~"Weekday",
+                            TRUE~"Weekend")) |> 
+  summarise(across(matches("lon|lat|count"), list(mean = mean,
+                              median = median,
+                              min = min,
+                              max = max)),
+            .by = c(siteID,d.type))
+ADF_sf = ADF_locations |>
+  select(count_mean, latitude_mean, longitude_mean) |>
+  sf::st_as_sf(coords = c("longitude_mean", "latitude_mean"), crs = "EPSG:4326")
+ADF_sf |> mapview::mapview()
+```
+
+
+
+
+
